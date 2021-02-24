@@ -1,10 +1,11 @@
 import React from "react";
+import NetSale from "./Components/NetSale";
 
 const App = () => {
   return (
-    <div>
-      <h1>Hello</h1>
-    </div>
+    <>
+      <NetSale />
+    </>
   );
 };
 
