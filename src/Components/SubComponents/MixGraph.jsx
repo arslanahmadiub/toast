@@ -4,7 +4,7 @@ import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
-const LineGraph = ({
+const MixGraph = ({
   previousMonth,
   predictionMonth,
   graphDate,
@@ -78,7 +78,6 @@ const LineGraph = ({
   );
 
   const [showProgress, setShowProgress] = useState(false);
-
   return (
     <div style={{ position: "relative" }}>
       <div
@@ -166,4 +165,4 @@ const LineGraph = ({
   );
 };
 
-export default LineGraph;
+export default MixGraph;

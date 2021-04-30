@@ -1,12 +1,20 @@
 import React from "react";
 import NetSalePlot from "./Components/NetSalePlot";
-import LineGraph from "./Components/SubComponents/LineGraph";
+import SaleChangePlot from "./Components/SaleChangePlot";
+import EmailButton from "./Components/SubComponents/EmailButton";
 
 const Main = () => {
   return (
-    <div className="main-home">
-      <NetSalePlot />
-    </div>
+    <>
+      <EmailButton />
+      <div className="main-home">
+        <br />
+        <NetSalePlot />
+
+        <br />
+        <SaleChangePlot />
+      </div>
+    </>
   );
 };
 

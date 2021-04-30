@@ -5,7 +5,7 @@ import { netSaleData } from "../DummyData/NetSaleDummyData";
 import LineGraph from "./SubComponents/LineGraph";
 import MixGraph from "./SubComponents/MixGraph";
 
-const NetSalePlot = () => {
+const SaleChangePlot = () => {
   const [graphDate, setGraphDate] = useState([]);
   const [graphData, setGraphData] = useState([]);
 
@@ -21,16 +21,11 @@ const NetSalePlot = () => {
       {
         name: "Sale 3 Week MA ",
         data: netSaleData.Sales3WeekMA,
-        type: "line",
+        type: "bar",
       },
       {
         name: "Sale 3 Week YoY MA",
         data: netSaleData.Sales3WeekYoYMA,
-        type: "line",
-      },
-      {
-        name: "Sale 9 Week MA",
-        data: netSaleData.Sales9WeekMA,
         type: "line",
       },
     ];
@@ -76,18 +71,16 @@ const NetSalePlot = () => {
 
   return (
     <div>
-      <LineGraph
+      <MixGraph
         previousMonth={previousMonth}
-        predictionMonth={predictionMonth}
         graphDate={graphDate}
         graphData={graphData}
-        colors={["#0E83AE", "#75D2EB", "#FF0000"]}
-        title="Net Sale Plot"
-        yAxisText="Sales"
+        colors={["#0E83AE", "#FF0000"]}
+        title="Sale Change Plot"
+        yAxisText="% of Sales"
         stroke={{
-          width: [1, 1, 1],
-          curve: ["smooth", "smooth", "stepline"],
-          dashArray: [0, 0, 6],
+          width: [1, 1],
+          curve: ["smooth", "smooth"],
         }}
         min={0}
         max={3000}
@@ -96,4 +89,4 @@ const NetSalePlot = () => {
   );
 };
 
-export default NetSalePlot;
+export default SaleChangePlot;
