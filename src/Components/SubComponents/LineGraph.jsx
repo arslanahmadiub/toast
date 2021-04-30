@@ -77,19 +77,24 @@ const LineGraph = ({
     },
   };
 
-  const [activeButtonPreviousText, setActiveButtonPreviousText] = useState(
-    "6M"
-  );
+  const [activeButtonPreviousText, setActiveButtonPreviousText] = useState("");
   const [activeButtonPreviousValue, setActiveButtonPreviousValue] = useState(
-    "6"
+    ""
   );
   const [activeButtonPerductionText, setActiveButtonPerductionText] = useState(
-    "6M"
+    ""
   );
   const [
     activeButtonPerductionValue,
     setActiveButtonPerductionValue,
-  ] = useState("6");
+  ] = useState("");
+
+  useEffect(() => {
+    setActiveButtonPerductionText(props.defaultPredictionText);
+    setActiveButtonPerductionValue(props.defaultPredictionValue);
+    setActiveButtonPreviousValue(props.defaultPreviousValue);
+    setActiveButtonPreviousText(props.defaultPreviousText);
+  }, []);
 
   useEffect(() => {
     props.setPrevious(activeButtonPreviousValue);
@@ -179,18 +184,15 @@ const LineGraph = ({
             justifyContent: "space-between",
           }}
         >
-          <div>
-            <p style={{ color: colors[0] }}>3W</p>
-            <p style={{ color: colors[0] }}>$2134</p>
-          </div>
-          <div>
-            <p style={{ color: colors[1] }}>9W</p>
-            <p style={{ color: colors[1] }}>$1876</p>
-          </div>
-          <div>
-            <p style={{ color: colors[2] }}>3W-YOY</p>
-            <p style={{ color: colors[2] }}>$1577</p>
-          </div>
+          {props.legendData &&
+            props.legendData.map((item, index) => {
+              return (
+                <div key={index}>
+                  <p style={{ color: item.color }}>{item.value1}</p>
+                  <p style={{ color: item.color }}>{item.value2}</p>
+                </div>
+              );
+            })}
         </div>
       </div>
     </div>

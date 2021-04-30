@@ -6,8 +6,8 @@ import LineGraph from "./SubComponents/LineGraph";
 const DailyOrdersPlot = () => {
   const [graphDate, setGraphDate] = useState([]);
   const [graphData, setGraphData] = useState([]);
-  const [predictionMonthValue, setPredictionMonth] = useState("6");
-  const [previousMonthValue, setPreviousMonth] = useState("6");
+  const [predictionMonthValue, setPredictionMonth] = useState("1");
+  const [previousMonthValue, setPreviousMonth] = useState("3");
 
   const [showProgress, setShowProgress] = useState(false);
 
@@ -21,8 +21,8 @@ const DailyOrdersPlot = () => {
       value: "1",
     },
     {
-      text: "6M",
-      value: "6",
+      text: "3M",
+      value: "3",
     },
     {
       text: "12M",
@@ -36,16 +36,16 @@ const DailyOrdersPlot = () => {
 
   let predictionMonth = [
     {
+      text: "0M",
+      value: "0",
+    },
+    {
       text: "1M",
       value: "1",
     },
     {
       text: "6M",
-      value: "6",
-    },
-    {
-      text: "12M",
-      value: "12",
+      value: "6 ",
     },
   ];
 
@@ -127,6 +127,22 @@ const DailyOrdersPlot = () => {
         setPrevious={(e) => setPreviousMonth(e)}
         min={parseInt(minGraphNumber)}
         max={parseInt(maxGraphNumber)}
+        defaultPreviousText={previousMonthValue + "M"}
+        defaultPreviousValue={previousMonthValue}
+        defaultPredictionValue={predictionMonthValue}
+        defaultPredictionText={predictionMonthValue + "M"}
+        legendData={[
+          {
+            value1: "3W",
+            value2: "104",
+            color: "#0E83AE",
+          },
+          {
+            value1: "9W",
+            value2: "97",
+            color: "#FF0000",
+          },
+        ]}
       />
     </div>
   );

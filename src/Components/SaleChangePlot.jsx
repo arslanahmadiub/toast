@@ -7,7 +7,7 @@ const SaleChangePlot = () => {
   const [graphDate, setGraphDate] = useState([]);
   const [graphData, setGraphData] = useState([]);
 
-  const [previousMonthValue, setPreviousMonth] = useState("6");
+  const [previousMonthValue, setPreviousMonth] = useState("12");
   const [predictionMonthValue, setPredictionMonth] = useState("6");
 
   const [showProgress, setShowProgress] = useState(false);
@@ -22,8 +22,8 @@ const SaleChangePlot = () => {
       value: "1",
     },
     {
-      text: "6M",
-      value: "6",
+      text: "3M",
+      value: "3",
     },
     {
       text: "12M",
@@ -95,7 +95,7 @@ const SaleChangePlot = () => {
         graphDate={graphDate}
         graphData={graphData}
         colors={["#0E83AE", "#FF0000"]}
-        title="Sale Change Plot"
+        title="YOY Sales % Change"
         yAxisText="% of Sales"
         stroke={{
           width: [0.7, 1],
@@ -108,6 +108,22 @@ const SaleChangePlot = () => {
         setPrediction={(e) => setPredictionMonth(e)}
         min={parseInt(minGraphNumber)}
         max={parseInt(maxGraphNumber)}
+        defaultPreviousText={previousMonthValue + "M"}
+        defaultPreviousValue={previousMonthValue}
+        defaultPredictionValue={predictionMonthValue}
+        defaultPredictionText={predictionMonthValue + "M"}
+        legendData={[
+          {
+            value1: "3W",
+            value2: "30%",
+            color: "#0E83AE",
+          },
+          {
+            value1: "9W",
+            value2: "21%",
+            color: "#FF0000",
+          },
+        ]}
       />
     </div>
   );

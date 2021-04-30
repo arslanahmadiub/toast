@@ -7,7 +7,7 @@ const LaborPlot = () => {
   const [graphDate, setGraphDate] = useState([]);
   const [graphData, setGraphData] = useState([]);
   const [predictionMonthValue, setPredictionMonth] = useState("6");
-  const [previousMonthValue, setPreviousMonth] = useState("6");
+  const [previousMonthValue, setPreviousMonth] = useState("1");
 
   const [showProgress, setShowProgress] = useState(false);
 
@@ -21,8 +21,8 @@ const LaborPlot = () => {
       value: "1",
     },
     {
-      text: "6M",
-      value: "6",
+      text: "3M",
+      value: "3",
     },
     {
       text: "12M",
@@ -113,7 +113,7 @@ const LaborPlot = () => {
         graphDate={graphDate}
         graphData={graphData}
         colors={["#0E83AE", "#75D2EB", "#FF0000"]}
-        title="Labor"
+        title="Labor Averages"
         yAxisText="% of Labor"
         stroke={{
           width: [2, 1, 1],
@@ -125,6 +125,27 @@ const LaborPlot = () => {
         setPrevious={(e) => setPreviousMonth(e)}
         min={parseInt(minGraphNumber)}
         max={parseInt(maxGraphNumber)}
+        defaultPreviousText={previousMonthValue + "M"}
+        defaultPreviousValue={previousMonthValue}
+        defaultPredictionValue={predictionMonthValue}
+        defaultPredictionText={predictionMonthValue + "M"}
+        legendData={[
+          {
+            value1: "1W",
+            value2: "23.4%",
+            color: "#0E83AE",
+          },
+          {
+            value1: "5W-YOY ",
+            value2: "26.7%",
+            color: "#75D2EB",
+          },
+          {
+            value1: "5W",
+            value2: "23.2%",
+            color: "#FF0000",
+          },
+        ]}
       />
     </div>
   );

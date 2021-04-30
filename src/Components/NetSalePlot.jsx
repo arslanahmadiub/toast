@@ -7,8 +7,8 @@ import LineGraph from "./SubComponents/LineGraph";
 const NetSalePlot = () => {
   const [graphDate, setGraphDate] = useState([]);
   const [graphData, setGraphData] = useState([]);
-  const [predictionMonthValue, setPredictionMonth] = useState("6");
-  const [previousMonthValue, setPreviousMonth] = useState("6");
+  const [predictionMonthValue, setPredictionMonth] = useState("1");
+  const [previousMonthValue, setPreviousMonth] = useState("3");
 
   const [showProgress, setShowProgress] = useState(false);
 
@@ -22,8 +22,8 @@ const NetSalePlot = () => {
       value: "1",
     },
     {
-      text: "6M",
-      value: "6",
+      text: "3M",
+      value: "3",
     },
     {
       text: "12M",
@@ -37,16 +37,16 @@ const NetSalePlot = () => {
 
   let predictionMonth = [
     {
+      text: "0M",
+      value: "0",
+    },
+    {
       text: "1M",
       value: "1",
     },
     {
       text: "6M",
       value: "6",
-    },
-    {
-      text: "12M",
-      value: "12",
     },
   ];
 
@@ -92,6 +92,7 @@ const NetSalePlot = () => {
         Math.min(...data.Data.Sales_3_Week_YoY_MA),
         Math.min(...data.Data.Sales_9_Week_MA)
       );
+
       setMinGraphNumber(
         parseInt(minNumber) === 0
           ? parseInt(minNumber)
@@ -126,6 +127,27 @@ const NetSalePlot = () => {
         setPrevious={(e) => setPreviousMonth(e)}
         min={parseInt(minGraphNumber)}
         max={parseInt(maxGraphNumber)}
+        defaultPreviousText={previousMonthValue + "M"}
+        defaultPreviousValue={previousMonthValue}
+        defaultPredictionValue={predictionMonthValue}
+        defaultPredictionText={predictionMonthValue + "M"}
+        legendData={[
+          {
+            value1: "3W",
+            value2: "$2134",
+            color: "#0E83AE",
+          },
+          {
+            value1: "9W",
+            value2: "$1876",
+            color: "#75D2EB",
+          },
+          {
+            value1: "3W-YOY",
+            value2: "$1577",
+            color: "#FF0000",
+          },
+        ]}
       />
     </div>
   );

@@ -7,7 +7,7 @@ const FridaysPlot = () => {
   const [graphDate, setGraphDate] = useState([]);
   const [graphData, setGraphData] = useState([]);
   const [predictionMonthValue, setPredictionMonth] = useState("6");
-  const [previousMonthValue, setPreviousMonth] = useState("6");
+  const [previousMonthValue, setPreviousMonth] = useState("3");
 
   const [showProgress, setShowProgress] = useState(false);
 
@@ -21,8 +21,8 @@ const FridaysPlot = () => {
       value: "1",
     },
     {
-      text: "6M",
-      value: "6",
+      text: "3M",
+      value: "3",
     },
     {
       text: "12M",
@@ -114,7 +114,7 @@ const FridaysPlot = () => {
         graphDate={graphDate}
         graphData={graphData}
         colors={["#0E83AE", "#75D2EB", "#FF0000"]}
-        title="Friday's"
+        title="DOW Sales Averages"
         yAxisText="Sales"
         stroke={{
           width: [2, 1, 1],
@@ -126,6 +126,27 @@ const FridaysPlot = () => {
         setPrevious={(e) => setPreviousMonth(e)}
         min={parseInt(minGraphNumber)}
         max={parseInt(maxGraphNumber)}
+        defaultPreviousText={previousMonthValue + "M"}
+        defaultPreviousValue={previousMonthValue}
+        defaultPredictionValue={predictionMonthValue}
+        defaultPredictionText={predictionMonthValue + "M"}
+        legendData={[
+          {
+            value1: "Gross Sales",
+            value2: "$2134",
+            color: "#0E83AE",
+          },
+          {
+            value1: "7D-YOY",
+            value2: "$1876",
+            color: "#75D2EB",
+          },
+          {
+            value1: "7D",
+            value2: "$1577",
+            color: "#FF0000",
+          },
+        ]}
       />
     </div>
   );
