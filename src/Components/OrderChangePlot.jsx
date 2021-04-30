@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import { getSaleChange } from "../Services/saleServices";
+import { getOrderChange } from "../Services/saleServices";
 import MixGraph from "./SubComponents/MixGraph";
 
-const SaleChangePlot = () => {
+const OrderChangePlot = () => {
   const [graphDate, setGraphDate] = useState([]);
   const [graphData, setGraphData] = useState([]);
 
@@ -41,7 +41,7 @@ const SaleChangePlot = () => {
   let netSaleCalculation = async (previous) => {
     try {
       setShowProgress(true);
-      let { data } = await getSaleChange(previous);
+      let { data } = await getOrderChange(previous);
 
       setShowProgress(false);
 
@@ -55,24 +55,24 @@ const SaleChangePlot = () => {
       let newData = [
         {
           name: "Sale 3 Week YoY Diff 7",
-          data: data.Data.Sales_3Week_3_3_YoY_Diff_7,
+          data: data.Data.Orders_3Week_3_YoY_Diff_7,
           type: "bar",
         },
         {
           name: "Sale 9 Week YoY Diff 7",
-          data: data.Data.Sales_9Week_3_YoY_Diff_7,
+          data: data.Data.Orders_9Week_3_YoY_Diff_7,
           type: "line",
         },
       ];
       setGraphData(newData);
 
       let maxNumber = Math.max(
-        Math.max(...data.Data.Sales_3Week_3_3_YoY_Diff_7),
-        Math.max(...data.Data.Sales_9Week_3_YoY_Diff_7)
+        Math.max(...data.Data.Orders_3Week_3_YoY_Diff_7),
+        Math.max(...data.Data.Orders_9Week_3_YoY_Diff_7)
       );
       let minNumber = Math.min(
-        Math.min(...data.Data.Sales_3Week_3_3_YoY_Diff_7),
-        Math.min(...data.Data.Sales_9Week_3_YoY_Diff_7)
+        Math.min(...data.Data.Orders_3Week_3_YoY_Diff_7),
+        Math.min(...data.Data.Orders_9Week_3_YoY_Diff_7)
       );
 
       setMinGraphNumber(
@@ -113,4 +113,4 @@ const SaleChangePlot = () => {
   );
 };
 
-export default SaleChangePlot;
+export default OrderChangePlot;

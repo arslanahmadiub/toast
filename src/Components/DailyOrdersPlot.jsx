@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import { getSaleChange } from "../Services/saleServices";
-import MixGraph from "./SubComponents/MixGraph";
+import { getDailyOrder } from "../Services/saleServices";
+import LineGraph from "./SubComponents/LineGraph";
 
-const SaleChangePlot = () => {
+const DailyOrdersPlot = () => {
   const [graphDate, setGraphDate] = useState([]);
   const [graphData, setGraphData] = useState([]);
-
-  const [previousMonthValue, setPreviousMonth] = useState("6");
   const [predictionMonthValue, setPredictionMonth] = useState("6");
+  const [previousMonthValue, setPreviousMonth] = useState("6");
 
   const [showProgress, setShowProgress] = useState(false);
 
   useEffect(() => {
-    netSaleCalculation(previousMonthValue);
-  }, [previousMonthValue]);
+    netSaleCalculation(previousMonthValue, predictionMonthValue);
+  }, [previousMonthValue, predictionMonthValue]);
 
   let previousMonth = [
     {
@@ -35,13 +34,28 @@ const SaleChangePlot = () => {
     },
   ];
 
+  let predictionMonth = [
+    {
+      text: "1M",
+      value: "1",
+    },
+    {
+      text: "6M",
+      value: "6",
+    },
+    {
+      text: "12M",
+      value: "12",
+    },
+  ];
+
   const [minGraphNumber, setMinGraphNumber] = useState(0);
   const [maxGraphNumber, setMaxGraphNumber] = useState(3000);
 
-  let netSaleCalculation = async (previous) => {
+  let netSaleCalculation = async (previous, prediction) => {
     try {
       setShowProgress(true);
-      let { data } = await getSaleChange(previous);
+      let { data } = await getDailyOrder(previous, prediction);
 
       setShowProgress(false);
 
@@ -54,27 +68,33 @@ const SaleChangePlot = () => {
 
       let newData = [
         {
-          name: "Sale 3 Week YoY Diff 7",
-          data: data.Data.Sales_3Week_3_3_YoY_Diff_7,
-          type: "bar",
+          name: "Orders 3 Week MA ",
+          data: data.Data.Orders_3_Week_MA,
+          type: "line",
         },
         {
-          name: "Sale 9 Week YoY Diff 7",
-          data: data.Data.Sales_9Week_3_YoY_Diff_7,
+          name: "Orders 3 Week YoY MA",
+          data: data.Data.Orders_3_Week_YoY_MA,
+          type: "line",
+        },
+        {
+          name: "Orders 9 Week MA",
+          data: data.Data.Orders_9_Week_MA,
           type: "line",
         },
       ];
       setGraphData(newData);
 
       let maxNumber = Math.max(
-        Math.max(...data.Data.Sales_3Week_3_3_YoY_Diff_7),
-        Math.max(...data.Data.Sales_9Week_3_YoY_Diff_7)
+        Math.max(...data.Data.Orders_3_Week_MA),
+        Math.max(...data.Data.Orders_3_Week_YoY_MA),
+        Math.max(...data.Data.Orders_9_Week_MA)
       );
       let minNumber = Math.min(
-        Math.min(...data.Data.Sales_3Week_3_3_YoY_Diff_7),
-        Math.min(...data.Data.Sales_9Week_3_YoY_Diff_7)
+        Math.min(...data.Data.Orders_3_Week_MA),
+        Math.min(...data.Data.Orders_3_Week_YoY_MA),
+        Math.min(...data.Data.Orders_9_Week_MA)
       );
-
       setMinGraphNumber(
         parseInt(minNumber) === 0
           ? parseInt(minNumber)
@@ -87,25 +107,24 @@ const SaleChangePlot = () => {
       setShowProgress(false);
     }
   };
-
   return (
     <div>
-      <MixGraph
+      <LineGraph
         previousMonth={previousMonth}
+        predictionMonth={predictionMonth}
         graphDate={graphDate}
         graphData={graphData}
-        colors={["#0E83AE", "#FF0000"]}
-        title="Sale Change Plot"
-        yAxisText="% of Sales"
+        colors={["#0E83AE", "#75D2EB", "#FF0000"]}
+        title="Daily Orders"
+        yAxisText="Orders"
         stroke={{
-          width: [0.7, 1],
-          curve: ["smooth", "smooth"],
+          width: [2, 1, 1],
+          curve: ["smooth", "smooth", "smooth"],
+          dashArray: [0, 5, 0],
         }}
-        min={0}
-        max={3000}
         progress={showProgress}
-        setPrevious={(e) => setPreviousMonth(e)}
         setPrediction={(e) => setPredictionMonth(e)}
+        setPrevious={(e) => setPreviousMonth(e)}
         min={parseInt(minGraphNumber)}
         max={parseInt(maxGraphNumber)}
       />
@@ -113,4 +132,4 @@ const SaleChangePlot = () => {
   );
 };
 
-export default SaleChangePlot;
+export default DailyOrdersPlot;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactApexChart from "react-apexcharts";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
@@ -15,6 +15,8 @@ const MixGraph = ({
   stroke,
   min,
   max,
+  progress,
+  ...props
 }) => {
   let buttonGroup = {
     border: "1px solid #9BBB59",
@@ -67,15 +69,43 @@ const MixGraph = ({
       title: {
         text: yAxisText,
       },
+      labels: {
+        formatter: function (val) {
+          return val.toFixed(0);
+        },
+      },
     },
   };
-
   const [activeButtonPreviousText, setActiveButtonPreviousText] = useState(
     "6M"
+  );
+  const [activeButtonPreviousValue, setActiveButtonPreviousValue] = useState(
+    "6"
   );
   const [activeButtonPerductionText, setActiveButtonPerductionText] = useState(
     "6M"
   );
+  const [
+    activeButtonPerductionValue,
+    setActiveButtonPerductionValue,
+  ] = useState("6");
+
+  useEffect(() => {
+    props.setPrevious(activeButtonPreviousValue);
+  }, [activeButtonPreviousValue]);
+
+  useEffect(() => {
+    props.setPrediction(activeButtonPerductionValue);
+  }, [activeButtonPerductionValue]);
+
+  let handelPreviousMonth = (text, value) => {
+    setActiveButtonPreviousText(text);
+    setActiveButtonPreviousValue(value);
+  };
+  let handelPreductionMonth = (text, value) => {
+    setActiveButtonPerductionText(text);
+    setActiveButtonPerductionValue(value);
+  };
 
   const [showProgress, setShowProgress] = useState(false);
   return (
@@ -98,7 +128,8 @@ const MixGraph = ({
                       ? buttonGroupActive
                       : buttonGroup
                   }
-                  onClick={() => setActiveButtonPreviousText(item.text)}
+                  onClick={() => handelPreviousMonth(item.text, item.value)}
+                  key={index}
                 >
                   {item.text}
                 </Button>
@@ -115,7 +146,8 @@ const MixGraph = ({
                       ? buttonGroupActive
                       : buttonGroup
                   }
-                  onClick={() => setActiveButtonPerductionText(item.text)}
+                  onClick={() => handelPreductionMonth(item.text, item.value)}
+                  key={index}
                 >
                   {item.text}
                 </Button>
@@ -136,7 +168,7 @@ const MixGraph = ({
           top: "50%",
           left: "50%",
           color: "#9BBB59",
-          display: showProgress ? "flex" : "none",
+          display: progress ? "flex" : "none",
         }}
       />
       <div style={{ display: "flex", justifyContent: "center" }}>
