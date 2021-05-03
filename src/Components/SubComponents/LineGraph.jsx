@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import ReactApexChart from "react-apexcharts";
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
-import CircularProgress from "@material-ui/core/CircularProgress";
+
+import CircularProgressGraph from "./CircularProgressGraph";
 
 const LineGraph = ({
   previousMonth,
@@ -167,7 +168,7 @@ const LineGraph = ({
         type="line"
         height={500}
       />
-      <CircularProgress
+      {/* <CircularProgress
         style={{
           position: "absolute",
           top: "50%",
@@ -175,21 +176,55 @@ const LineGraph = ({
           color: "#9BBB59",
           display: progress ? "flex" : "none",
         }}
-      />
-      <div style={{ display: "flex", justifyContent: "center" }}>
+      /> */}
+      <div
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          display: progress ? "flex" : "none",
+        }}
+      >
+        <CircularProgressGraph />
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+          position: "absolute",
+          top: "85px",
+        }}
+      >
         <div
           style={{
             display: "flex",
-            width: "25%",
-            justifyContent: "space-between",
+            width: "100%",
+            justifyContent: "space-around",
+            paddingLeft: "30%",
+            paddingRight: "30%",
           }}
         >
           {props.legendData &&
             props.legendData.map((item, index) => {
               return (
-                <div key={index}>
-                  <p style={{ color: item.color }}>{item.value1}</p>
-                  <p style={{ color: item.color }}>{item.value2}</p>
+                <div
+                  key={index}
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <p style={{ color: item.color, fontSize: "11px" }}>
+                    {item.value1}
+                  </p>
+                  <p style={{ color: item.color, fontSize: "11px" }}>
+                    {item.value2}
+                  </p>
                 </div>
               );
             })}

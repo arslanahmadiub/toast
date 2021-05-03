@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import Button from "@material-ui/core/Button";
-import CircularProgress from "@material-ui/core/CircularProgress";
+// import CircularProgress from "@material-ui/core/CircularProgress";
 import { sendEmail } from "../../Services/saleServices";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import CircularProgress from "./CircularProgress";
 
 const EmailButton = () => {
   const [loading, setloading] = useState(false);
@@ -37,17 +38,7 @@ const EmailButton = () => {
           paddingLeft: "10px",
           paddingRight: "10px",
         }}
-        startIcon={
-          <CircularProgress
-            style={{
-              color: "white",
-              width: "20px",
-              height: "20px",
-              display: loading ? "flex" : "none",
-            }}
-            disableShrink
-          />
-        }
+        startIcon={<CircularProgress show={loading ? "flex" : "none"} />}
         onClick={handelSendEmail}
       >
         Send Email

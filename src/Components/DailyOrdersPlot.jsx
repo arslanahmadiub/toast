@@ -55,6 +55,7 @@ const DailyOrdersPlot = () => {
 
   const [legendData1, setlegendData1] = useState("");
 
+  const [legendData2, setlegendData2] = useState("");
   const [legendData3, setlegendData3] = useState("");
 
   let netSaleCalculation = async (previous, prediction) => {
@@ -76,6 +77,7 @@ const DailyOrdersPlot = () => {
       setlegendData1(data.Data.Orders_3_Week_MA[index]);
 
       setlegendData3(data.Data.Orders_9_Week_MA[index]);
+      setlegendData2(data.Data.Orders_3_Week_YoY_MA[index]);
 
       let newData = [
         {
@@ -157,6 +159,11 @@ const DailyOrdersPlot = () => {
             value1: "3W",
             value2: legendData1,
             color: "#0E83AE",
+          },
+          {
+            value1: "3W-YOY",
+            value2: legendData2,
+            color: "#75D2EB",
           },
           {
             value1: "9W",
