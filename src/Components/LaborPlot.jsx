@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import moment from "moment";
 import { getLabor } from "../Services/saleServices";
 import LineGraph from "./SubComponents/LineGraph";
+import _ from "lodash";
 
 const LaborPlot = () => {
   const [graphDate, setGraphDate] = useState([]);
@@ -52,6 +53,10 @@ const LaborPlot = () => {
   const [minGraphNumber, setMinGraphNumber] = useState(0);
   const [maxGraphNumber, setMaxGraphNumber] = useState(3000);
 
+  const [legendData1, setlegendData1] = useState("");
+  const [legendData2, setlegendData2] = useState("");
+  const [legendData3, setlegendData3] = useState("");
+
   let netSaleCalculation = async (previous) => {
     try {
       setShowProgress(true);
@@ -64,6 +69,12 @@ const LaborPlot = () => {
         return dateValue;
       });
       setGraphDate(date);
+
+      let index = date.indexOf(moment().format("MM/DD/yyyy"));
+
+      setlegendData1(data.Data.Labor_1Week_MA[index]);
+      setlegendData2(data.Data.Labor_yoy[index]);
+      setlegendData3(data.Data.Labor_5Week_MA[index]);
 
       let newData = [
         {
@@ -82,23 +93,25 @@ const LaborPlot = () => {
           type: "line",
         },
       ];
-      let maxNumber = Math.max(
-        Math.max(...data.Data.Labor_1Week_MA),
-        Math.max(...data.Data.Labor_yoy),
-        Math.max(...data.Data.Labor_5Week_MA)
-      );
+
       let minNumber = Math.min(
-        Math.min(...data.Data.Labor_1Week_MA),
-        Math.min(...data.Data.Labor_yoy),
-        Math.min(...data.Data.Labor_5Week_MA)
+        _(data.Data.Labor_1Week_MA).chain().filter(_.isNumber).min().value(),
+        _(data.Data.Labor_yoy).chain().filter(_.isNumber).min().value(),
+        _(data.Data.Labor_5Week_MA).chain().filter(_.isNumber).min().value()
       );
+      let maxNumber = Math.max(
+        _(data.Data.Labor_1Week_MA).chain().filter(_.isNumber).max().value(),
+        _(data.Data.Labor_yoy).chain().filter(_.isNumber).max().value(),
+        _(data.Data.Labor_5Week_MA).chain().filter(_.isNumber).max().value()
+      );
+
       setMinGraphNumber(
         parseInt(minNumber) === 0
           ? parseInt(minNumber)
-          : parseInt(minNumber) - 10
+          : parseInt(minNumber) - 2
       );
 
-      setMaxGraphNumber(parseInt(maxNumber) + 10);
+      setMaxGraphNumber(parseInt(maxNumber) + 2);
       setGraphData(newData);
     } catch (error) {
       console.log(error);
@@ -132,17 +145,17 @@ const LaborPlot = () => {
         legendData={[
           {
             value1: "1W",
-            value2: "23.4%",
+            value2: legendData1 + "%",
             color: "#0E83AE",
           },
           {
             value1: "5W-YOY ",
-            value2: "26.7%",
+            value2: legendData2 + "%",
             color: "#75D2EB",
           },
           {
             value1: "5W",
-            value2: "23.2%",
+            value2: legendData3 + "%",
             color: "#FF0000",
           },
         ]}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import moment from "moment";
 import { getSaleChange } from "../Services/saleServices";
 import MixGraph from "./SubComponents/MixGraph";
+import _ from "lodash";
 
 const SaleChangePlot = () => {
   const [graphDate, setGraphDate] = useState([]);
@@ -38,6 +39,10 @@ const SaleChangePlot = () => {
   const [minGraphNumber, setMinGraphNumber] = useState(0);
   const [maxGraphNumber, setMaxGraphNumber] = useState(3000);
 
+  const [legendData1, setlegendData1] = useState("");
+
+  const [legendData3, setlegendData3] = useState("");
+
   let netSaleCalculation = async (previous) => {
     try {
       setShowProgress(true);
@@ -51,6 +56,12 @@ const SaleChangePlot = () => {
         return dateValue;
       });
       setGraphDate(date);
+
+      let index = date.indexOf(moment().format("MM/DD/yyyy"));
+
+      setlegendData1(data.Data.Sales_3Week_3_3_YoY_Diff_7[index]);
+
+      setlegendData3(data.Data.Sales_9Week_3_YoY_Diff_7[index]);
 
       let newData = [
         {
@@ -66,13 +77,29 @@ const SaleChangePlot = () => {
       ];
       setGraphData(newData);
 
-      let maxNumber = Math.max(
-        Math.max(...data.Data.Sales_3Week_3_3_YoY_Diff_7),
-        Math.max(...data.Data.Sales_9Week_3_YoY_Diff_7)
-      );
       let minNumber = Math.min(
-        Math.min(...data.Data.Sales_3Week_3_3_YoY_Diff_7),
-        Math.min(...data.Data.Sales_9Week_3_YoY_Diff_7)
+        _(data.Data.Sales_3Week_3_3_YoY_Diff_7)
+          .chain()
+          .filter(_.isNumber)
+          .min()
+          .value(),
+        _(data.Data.Sales_9Week_3_YoY_Diff_7)
+          .chain()
+          .filter(_.isNumber)
+          .min()
+          .value()
+      );
+      let maxNumber = Math.max(
+        _(data.Data.Sales_3Week_3_3_YoY_Diff_7)
+          .chain()
+          .filter(_.isNumber)
+          .max()
+          .value(),
+        _(data.Data.Sales_9Week_3_YoY_Diff_7)
+          .chain()
+          .filter(_.isNumber)
+          .max()
+          .value()
       );
 
       setMinGraphNumber(
@@ -115,12 +142,12 @@ const SaleChangePlot = () => {
         legendData={[
           {
             value1: "3W",
-            value2: "30%",
+            value2: legendData1 + "%",
             color: "#0E83AE",
           },
           {
             value1: "9W",
-            value2: "21%",
+            value2: legendData3 + "%",
             color: "#FF0000",
           },
         ]}

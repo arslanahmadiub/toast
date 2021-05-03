@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-
+import _ from "lodash";
 import { getNetSale } from "../Services/saleServices";
 import LineGraph from "./SubComponents/LineGraph";
 
@@ -52,6 +52,10 @@ const NetSalePlot = () => {
 
   const [minGraphNumber, setMinGraphNumber] = useState(0);
   const [maxGraphNumber, setMaxGraphNumber] = useState(3000);
+
+  const [legendData1, setlegendData1] = useState("");
+  const [legendData2, setlegendData2] = useState("");
+  const [legendData3, setlegendData3] = useState("");
   let netSaleCalculation = async (previous, prediction) => {
     try {
       setShowProgress(true);
@@ -64,6 +68,12 @@ const NetSalePlot = () => {
         return dateValue;
       });
       setGraphDate(date);
+
+      let index = date.indexOf(moment().format("MM/DD/yyyy"));
+
+      setlegendData1(data.Data.Sales_3_Week_MA[index]);
+      setlegendData2(data.Data.Sales_3_Week_YoY_MA[index]);
+      setlegendData3(data.Data.Sales_9_Week_MA[index]);
 
       let newData = [
         {
@@ -82,24 +92,33 @@ const NetSalePlot = () => {
           type: "line",
         },
       ];
-      let maxNumber = Math.max(
-        Math.max(...data.Data.Sales_3_Week_MA),
-        Math.max(...data.Data.Sales_3_Week_YoY_MA),
-        Math.max(...data.Data.Sales_9_Week_MA)
-      );
+
       let minNumber = Math.min(
-        Math.min(...data.Data.Sales_3_Week_MA),
-        Math.min(...data.Data.Sales_3_Week_YoY_MA),
-        Math.min(...data.Data.Sales_9_Week_MA)
+        _(data.Data.Sales_3_Week_MA).chain().filter(_.isNumber).min().value(),
+        _(data.Data.Sales_3_Week_YoY_MA)
+          .chain()
+          .filter(_.isNumber)
+          .min()
+          .value(),
+        _(data.Data.Sales_9_Week_MA).chain().filter(_.isNumber).min().value()
+      );
+      let maxNumber = Math.max(
+        _(data.Data.Sales_3_Week_MA).chain().filter(_.isNumber).max().value(),
+        _(data.Data.Sales_3_Week_YoY_MA)
+          .chain()
+          .filter(_.isNumber)
+          .max()
+          .value(),
+        _(data.Data.Sales_9_Week_MA).chain().filter(_.isNumber).max().value()
       );
 
       setMinGraphNumber(
         parseInt(minNumber) === 0
           ? parseInt(minNumber)
-          : parseInt(minNumber) - 10
+          : parseInt(minNumber) - 20
       );
 
-      setMaxGraphNumber(parseInt(maxNumber) + 10);
+      setMaxGraphNumber(parseInt(maxNumber) + 20);
       setGraphData(newData);
     } catch (error) {
       console.log(error);
@@ -115,7 +134,7 @@ const NetSalePlot = () => {
         graphDate={graphDate}
         graphData={graphData}
         colors={["#0E83AE", "#75D2EB", "#FF0000"]}
-        title="Net Sale"
+        title="Net Sales"
         yAxisText="Sales"
         stroke={{
           width: [2, 1, 1],
@@ -134,17 +153,17 @@ const NetSalePlot = () => {
         legendData={[
           {
             value1: "3W",
-            value2: "$2134",
+            value2: "$" + legendData1,
             color: "#0E83AE",
           },
           {
             value1: "9W",
-            value2: "$1876",
+            value2: "$" + legendData3,
             color: "#75D2EB",
           },
           {
             value1: "3W-YOY",
-            value2: "$1577",
+            value2: "$" + legendData2,
             color: "#FF0000",
           },
         ]}

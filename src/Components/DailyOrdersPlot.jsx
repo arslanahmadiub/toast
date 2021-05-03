@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import moment from "moment";
 import { getDailyOrder } from "../Services/saleServices";
 import LineGraph from "./SubComponents/LineGraph";
+import _ from "lodash";
 
 const DailyOrdersPlot = () => {
   const [graphDate, setGraphDate] = useState([]);
@@ -52,6 +53,10 @@ const DailyOrdersPlot = () => {
   const [minGraphNumber, setMinGraphNumber] = useState(0);
   const [maxGraphNumber, setMaxGraphNumber] = useState(3000);
 
+  const [legendData1, setlegendData1] = useState("");
+
+  const [legendData3, setlegendData3] = useState("");
+
   let netSaleCalculation = async (previous, prediction) => {
     try {
       setShowProgress(true);
@@ -65,6 +70,12 @@ const DailyOrdersPlot = () => {
         return dateValue;
       });
       setGraphDate(date);
+
+      let index = date.indexOf(moment().format("MM/DD/yyyy"));
+
+      setlegendData1(data.Data.Orders_3_Week_MA[index]);
+
+      setlegendData3(data.Data.Orders_9_Week_MA[index]);
 
       let newData = [
         {
@@ -85,23 +96,33 @@ const DailyOrdersPlot = () => {
       ];
       setGraphData(newData);
 
-      let maxNumber = Math.max(
-        Math.max(...data.Data.Orders_3_Week_MA),
-        Math.max(...data.Data.Orders_3_Week_YoY_MA),
-        Math.max(...data.Data.Orders_9_Week_MA)
-      );
       let minNumber = Math.min(
-        Math.min(...data.Data.Orders_3_Week_MA),
-        Math.min(...data.Data.Orders_3_Week_YoY_MA),
-        Math.min(...data.Data.Orders_9_Week_MA)
+        _(data.Data.Orders_3_Week_MA).chain().filter(_.isNumber).min().value(),
+        _(data.Data.Orders_3_Week_YoY_MA)
+          .chain()
+          .filter(_.isNumber)
+          .min()
+          .value(),
+        _(data.Data.Orders_9_Week_MA).chain().filter(_.isNumber).min().value()
       );
+
+      let maxNumber = Math.max(
+        _(data.Data.Orders_3_Week_MA).chain().filter(_.isNumber).max().value(),
+        _(data.Data.Orders_3_Week_YoY_MA)
+          .chain()
+          .filter(_.isNumber)
+          .max()
+          .value(),
+        _(data.Data.Orders_9_Week_MA).chain().filter(_.isNumber).max().value()
+      );
+
       setMinGraphNumber(
         parseInt(minNumber) === 0
           ? parseInt(minNumber)
-          : parseInt(minNumber) - 10
+          : parseInt(minNumber) - 20
       );
 
-      setMaxGraphNumber(parseInt(maxNumber) + 10);
+      setMaxGraphNumber(parseInt(maxNumber) + 20);
     } catch (error) {
       console.log(error);
       setShowProgress(false);
@@ -134,12 +155,12 @@ const DailyOrdersPlot = () => {
         legendData={[
           {
             value1: "3W",
-            value2: "104",
+            value2: legendData1,
             color: "#0E83AE",
           },
           {
             value1: "9W",
-            value2: "97",
+            value2: legendData3,
             color: "#FF0000",
           },
         ]}
