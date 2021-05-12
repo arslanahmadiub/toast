@@ -37,10 +37,10 @@ export async function getOrderChange(timeFrame) {
   });
 }
 
-export async function getWeekSale(timeFrame) {
+export async function getWeekSale(timeFrame, numberOfMonth) {
   return await axios({
     method: "get",
-    url: fridaysUrl + timeFrame,
+    url: fridaysUrl + timeFrame + "/" + numberOfMonth,
   });
 }
 export async function getLabor(timeFrame) {

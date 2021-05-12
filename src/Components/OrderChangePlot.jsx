@@ -3,8 +3,11 @@ import moment from "moment";
 import { getOrderChange } from "../Services/saleServices";
 import MixGraph from "./SubComponents/MixGraph";
 import _ from "lodash";
+const { JSDOM } = require("jsdom");
 
 const OrderChangePlot = () => {
+  const { window } = new JSDOM();
+
   const [graphDate, setGraphDate] = useState([]);
   const [graphData, setGraphData] = useState([]);
 
@@ -44,11 +47,11 @@ const OrderChangePlot = () => {
   const [legendData3, setlegendData3] = useState("");
 
   let netSaleCalculation = async (previous) => {
+    const start = window.performance.now();
+
     try {
       setShowProgress(true);
       let { data } = await getOrderChange(previous);
-
-      setShowProgress(false);
 
       let date = data.Date.map((item) => {
         let dateValue = moment(item).format("MM/DD/yyyy");
@@ -59,9 +62,13 @@ const OrderChangePlot = () => {
 
       let index = date.indexOf(moment().format("MM/DD/yyyy"));
 
-      setlegendData1(data.Data.Orders_3Week_3_YoY_Diff_7[index]);
+      let l1 = _.without(data.Data.Orders_3Week_3_YoY_Diff_7, "");
 
-      setlegendData3(data.Data.Orders_9Week_3_YoY_Diff_7[index]);
+      let l3 = _.without(data.Data.Orders_9Week_3_YoY_Diff_7, "");
+
+      setlegendData1(l1[l1.length - 1]);
+
+      setlegendData3(l3[l3.length - 1]);
 
       let newData = [
         {
@@ -110,6 +117,14 @@ const OrderChangePlot = () => {
       );
 
       setMaxGraphNumber(parseInt(maxNumber) + 10);
+      setShowProgress(false);
+      const stop = window.performance.now();
+
+      console.log(
+        `Time Taken to execute YoY Order Change = ${
+          (stop - start) / 1000
+        } seconds`
+      );
     } catch (error) {
       console.log(error);
       setShowProgress(false);
@@ -143,12 +158,12 @@ const OrderChangePlot = () => {
         legendData={[
           {
             value1: "3W",
-            value2: legendData1 + "%",
+            value2: parseFloat(legendData1).toFixed(1) + "%",
             color: "#0E83AE",
           },
           {
             value1: "9W",
-            value2: legendData3 + "%",
+            value2: parseFloat(legendData3).toFixed(1) + "%",
             color: "#FF0000",
           },
         ]}

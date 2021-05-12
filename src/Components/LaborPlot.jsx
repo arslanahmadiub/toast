@@ -61,7 +61,6 @@ const LaborPlot = () => {
     try {
       setShowProgress(true);
       let { data } = await getLabor(previous);
-      setShowProgress(false);
 
       let date = data.Date.map((item) => {
         let dateValue = moment(item).format("MM/DD/yyyy");
@@ -72,9 +71,15 @@ const LaborPlot = () => {
 
       let index = date.indexOf(moment().format("MM/DD/yyyy"));
 
-      setlegendData1(data.Data.Labor_1Week_MA[index]);
-      setlegendData2(data.Data.Labor_yoy[index]);
-      setlegendData3(data.Data.Labor_5Week_MA[index]);
+      let l1 = _.without(data.Data.Labor_1Week_MA, "");
+
+      let l2 = _.without(data.Data.Labor_yoy, "");
+      let l3 = _.without(data.Data.Labor_5Week_MA, "");
+
+      setlegendData1(l1[l1.length - 1]);
+      setlegendData2(l2[l2.length - 1]);
+
+      setlegendData3(l3[l3.length - 1]);
 
       let newData = [
         {
@@ -113,6 +118,7 @@ const LaborPlot = () => {
 
       setMaxGraphNumber(parseInt(maxNumber) + 2);
       setGraphData(newData);
+      setShowProgress(false);
     } catch (error) {
       console.log(error);
       setShowProgress(false);
@@ -145,17 +151,20 @@ const LaborPlot = () => {
         legendData={[
           {
             value1: "1W",
-            value2: legendData1 + "%",
+
+            value2: parseFloat(legendData1).toFixed(1) + "%",
+
             color: "#0E83AE",
           },
           {
             value1: "5W-YOY ",
-            value2: legendData2 + "%",
+
+            value2: parseFloat(legendData2).toFixed(1) + "%",
             color: "#75D2EB",
           },
           {
             value1: "5W",
-            value2: legendData3 + "%",
+            value2: parseFloat(legendData3).toFixed(1) + "%",
             color: "#FF0000",
           },
         ]}

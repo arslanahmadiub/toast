@@ -7,14 +7,14 @@ import _ from "lodash";
 const FridaysPlot = () => {
   const [graphDate, setGraphDate] = useState([]);
   const [graphData, setGraphData] = useState([]);
-  const [predictionMonthValue, setPredictionMonth] = useState("6");
+  const [predictionMonthValue, setPredictionMonth] = useState("1");
   const [previousMonthValue, setPreviousMonth] = useState("3");
 
   const [showProgress, setShowProgress] = useState(false);
 
   useEffect(() => {
-    netSaleCalculation(previousMonthValue);
-  }, [previousMonthValue]);
+    netSaleCalculation(previousMonthValue, predictionMonthValue);
+  }, [previousMonthValue, predictionMonthValue]);
 
   let previousMonth = [
     {
@@ -37,16 +37,16 @@ const FridaysPlot = () => {
 
   let predictionMonth = [
     {
+      text: "0M",
+      value: "0",
+    },
+    {
       text: "1M",
       value: "1",
     },
     {
       text: "6M",
       value: "6",
-    },
-    {
-      text: "12M",
-      value: "12",
     },
   ];
 
@@ -57,12 +57,13 @@ const FridaysPlot = () => {
   const [legendData2, setlegendData2] = useState("");
   const [legendData3, setlegendData3] = useState("");
 
-  let netSaleCalculation = async (previous) => {
+  const [day, setDay] = useState("");
+
+  let netSaleCalculation = async (previous, prediction) => {
     try {
       setShowProgress(true);
-      let { data } = await getWeekSale(previous);
-
-      setShowProgress(false);
+      let { data } = await getWeekSale(previous, prediction);
+      setDay(data.WeekDay);
 
       let date = data.Date.map((item) => {
         let dateValue = moment(item).format("MM/DD/yyyy");
@@ -73,9 +74,15 @@ const FridaysPlot = () => {
 
       let index = date.indexOf(moment().format("MM/DD/yyyy"));
 
-      setlegendData1(data.Data.Gross_Sales[index]);
-      setlegendData2(data.Data.Sales_7_Day_YoY_MA[index]);
-      setlegendData3(data.Data.Sales_7_Day_MA[index]);
+      let l1 = _.without(data.Data.Gross_Sales, "");
+
+      let l2 = _.without(data.Data.Sales_7_Day_YoY_MA, "");
+      let l3 = _.without(data.Data.Sales_7_Day_MA, "");
+
+      setlegendData1(l1[l1.length - 1]);
+      setlegendData2(l2[l2.length - 1]);
+
+      setlegendData3(l3[l3.length - 1]);
 
       let newData = [
         {
@@ -123,6 +130,7 @@ const FridaysPlot = () => {
 
       setMaxGraphNumber(parseInt(maxNumber) + 20);
       setGraphData(newData);
+      setShowProgress(false);
     } catch (error) {
       console.log(error);
       setShowProgress(false);
@@ -133,15 +141,16 @@ const FridaysPlot = () => {
     <div>
       <LineGraph
         previousMonth={previousMonth}
+        predictionMonth={predictionMonth}
         graphDate={graphDate}
         graphData={graphData}
         colors={["#0E83AE", "#75D2EB", "#FF0000"]}
-        title="DOW Sales Averages"
+        title={`"DOW Sales Averages" ${day}`}
         yAxisText="Sales"
         stroke={{
           width: [2, 1, 1],
           curve: ["smooth", "smooth", "smooth"],
-          dashArray: [0, 5, 0],
+          dashArray: [3, 5, 0],
         }}
         progress={showProgress}
         setPrediction={(e) => setPredictionMonth(e)}

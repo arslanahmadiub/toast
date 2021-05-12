@@ -76,35 +76,24 @@ const MixGraph = ({
       },
     },
   };
-  const [activeButtonPreviousText, setActiveButtonPreviousText] = useState(
-    "6M"
-  );
-  const [activeButtonPreviousValue, setActiveButtonPreviousValue] = useState(
-    "6"
-  );
-  const [activeButtonPerductionText, setActiveButtonPerductionText] = useState(
-    "6M"
-  );
-  const [
-    activeButtonPerductionValue,
-    setActiveButtonPerductionValue,
-  ] = useState("6");
-
-  useEffect(() => {
-    props.setPrevious(activeButtonPreviousValue);
-  }, [activeButtonPreviousValue]);
-
-  useEffect(() => {
-    props.setPrediction(activeButtonPerductionValue);
-  }, [activeButtonPerductionValue]);
+  const [activeButtonPreviousText, setActiveButtonPreviousText] =
+    useState("6M");
+  const [activeButtonPreviousValue, setActiveButtonPreviousValue] =
+    useState("6");
+  const [activeButtonPerductionText, setActiveButtonPerductionText] =
+    useState("6M");
+  const [activeButtonPerductionValue, setActiveButtonPerductionValue] =
+    useState("6");
 
   let handelPreviousMonth = (text, value) => {
     setActiveButtonPreviousText(text);
     setActiveButtonPreviousValue(value);
+    props.setPrevious(value);
   };
   let handelPreductionMonth = (text, value) => {
     setActiveButtonPerductionText(text);
     setActiveButtonPerductionValue(value);
+    props.setPrediction(value);
   };
 
   useEffect(() => {
@@ -113,7 +102,7 @@ const MixGraph = ({
     setActiveButtonPreviousValue(props.defaultPreviousValue);
     setActiveButtonPreviousText(props.defaultPreviousText);
   }, []);
-  const [showProgress, setShowProgress] = useState(false);
+
   return (
     <div style={{ position: "relative" }}>
       <div

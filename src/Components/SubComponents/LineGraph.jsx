@@ -17,6 +17,7 @@ const LineGraph = ({
   min,
   max,
   progress,
+  predictionData,
   ...props
 }) => {
   let buttonGroup = {
@@ -64,6 +65,56 @@ const LineGraph = ({
     markers: {
       size: 0,
     },
+
+    annotations: {
+      position: "back",
+
+      points: [
+        {
+          x: new Date(`${predictionData && predictionData.date}`).getTime(),
+          y: predictionData && predictionData.value,
+          yAxisIndex: 0,
+          seriesIndex: 0,
+          marker: {
+            size: 5,
+            fillColor: "#ffffff",
+            strokeColor: "#ff0000",
+            strokeWidth: 2,
+            shape: "circle",
+            radius: 2,
+            OffsetX: 0,
+            OffsetY: 0,
+            cssClass: "",
+          },
+          label: {
+            borderColor: "#ff0000",
+            borderWidth: 1,
+            borderRadius: 2,
+            text: `Prediction ${predictionData && predictionData.date} ${
+              predictionData && predictionData.value
+            }`,
+            textAnchor: "middle",
+            offsetX: 0,
+            offsetY: 0,
+            style: {
+              background: "#ff0000",
+              color: "#ffffff",
+              fontSize: "12px",
+              fontWeight: 400,
+              fontFamily: undefined,
+              cssClass: "apexcharts-point-annotation-label",
+              padding: {
+                left: 5,
+                right: 5,
+                top: 5,
+                bottom: 5,
+              },
+            },
+          },
+        },
+      ],
+    },
+
     yaxis: {
       min: min,
       max: max,
@@ -79,16 +130,12 @@ const LineGraph = ({
   };
 
   const [activeButtonPreviousText, setActiveButtonPreviousText] = useState("");
-  const [activeButtonPreviousValue, setActiveButtonPreviousValue] = useState(
-    ""
-  );
-  const [activeButtonPerductionText, setActiveButtonPerductionText] = useState(
-    ""
-  );
-  const [
-    activeButtonPerductionValue,
-    setActiveButtonPerductionValue,
-  ] = useState("");
+  const [activeButtonPreviousValue, setActiveButtonPreviousValue] =
+    useState("");
+  const [activeButtonPerductionText, setActiveButtonPerductionText] =
+    useState("");
+  const [activeButtonPerductionValue, setActiveButtonPerductionValue] =
+    useState("");
 
   useEffect(() => {
     setActiveButtonPerductionText(props.defaultPredictionText);
@@ -97,21 +144,24 @@ const LineGraph = ({
     setActiveButtonPreviousText(props.defaultPreviousText);
   }, []);
 
-  useEffect(() => {
-    props.setPrevious(activeButtonPreviousValue);
-  }, [activeButtonPreviousValue]);
+  // useEffect(() => {
+  //   props.setPrevious(activeButtonPreviousValue);
+  // }, [activeButtonPreviousValue]);
 
-  useEffect(() => {
-    props.setPrediction(activeButtonPerductionValue);
-  }, [activeButtonPerductionValue]);
+  // useEffect(() => {
+  //   props.setPrediction(activeButtonPerductionValue);
+  // }, [activeButtonPerductionValue]);
 
   let handelPreviousMonth = (text, value) => {
     setActiveButtonPreviousText(text);
     setActiveButtonPreviousValue(value);
+
+    props.setPrevious(value);
   };
   let handelPreductionMonth = (text, value) => {
     setActiveButtonPerductionText(text);
     setActiveButtonPerductionValue(value);
+    props.setPrediction(value);
   };
 
   return (

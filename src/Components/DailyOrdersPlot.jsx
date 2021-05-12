@@ -63,11 +63,8 @@ const DailyOrdersPlot = () => {
       setShowProgress(true);
       let { data } = await getDailyOrder(previous, prediction);
 
-      setShowProgress(false);
-
       let date = data.Date.map((item) => {
         let dateValue = moment(item).format("MM/DD/yyyy");
-
         return dateValue;
       });
       setGraphDate(date);
@@ -79,6 +76,15 @@ const DailyOrdersPlot = () => {
       setlegendData3(data.Data.Orders_9_Week_MA[index]);
       setlegendData2(data.Data.Orders_3_Week_YoY_MA[index]);
 
+      let l1 = _.without(data.Data.Orders_3_Week_MA, "");
+
+      let l2 = _.without(data.Data.Orders_3_Week_YoY_MA, "");
+      let l3 = _.without(data.Data.Orders_9_Week_MA, "");
+
+      setlegendData1(l1[l1.length - 1]);
+      setlegendData2(l2[l2.length - 1]);
+
+      setlegendData3(l3[l3.length - 1]);
       let newData = [
         {
           name: "Orders 3 Week MA ",
@@ -125,6 +131,7 @@ const DailyOrdersPlot = () => {
       );
 
       setMaxGraphNumber(parseInt(maxNumber) + 20);
+      setShowProgress(false);
     } catch (error) {
       console.log(error);
       setShowProgress(false);
@@ -157,17 +164,17 @@ const DailyOrdersPlot = () => {
         legendData={[
           {
             value1: "3W",
-            value2: legendData1,
+            value2: parseFloat(legendData1).toFixed(1),
             color: "#0E83AE",
           },
           {
             value1: "3W-YOY",
-            value2: legendData2,
+            value2: parseFloat(legendData2).toFixed(1),
             color: "#75D2EB",
           },
           {
             value1: "9W",
-            value2: legendData3,
+            value2: parseFloat(legendData3).toFixed(1),
             color: "#FF0000",
           },
         ]}

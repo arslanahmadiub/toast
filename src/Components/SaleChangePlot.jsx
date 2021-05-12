@@ -3,8 +3,11 @@ import moment from "moment";
 import { getSaleChange } from "../Services/saleServices";
 import MixGraph from "./SubComponents/MixGraph";
 import _ from "lodash";
+const { JSDOM } = require("jsdom");
 
 const SaleChangePlot = () => {
+  const { window } = new JSDOM();
+
   const [graphDate, setGraphDate] = useState([]);
   const [graphData, setGraphData] = useState([]);
 
@@ -45,10 +48,10 @@ const SaleChangePlot = () => {
 
   let netSaleCalculation = async (previous) => {
     try {
+      const start = window.performance.now();
+
       setShowProgress(true);
       let { data } = await getSaleChange(previous);
-
-      setShowProgress(false);
 
       let date = data.Date.map((item) => {
         let dateValue = moment(item).format("MM/DD/yyyy");
@@ -59,9 +62,17 @@ const SaleChangePlot = () => {
 
       let index = date.indexOf(moment().format("MM/DD/yyyy"));
 
-      setlegendData1(data.Data.Sales_3Week_3_3_YoY_Diff_7[index]);
+      let yesterday = moment().subtract(1, "days");
 
-      setlegendData3(data.Data.Sales_9Week_3_YoY_Diff_7[index]);
+      let lastDayIndex = date.indexOf(moment(yesterday).format("MM/DD/yyyy"));
+
+      let l1 = _.without(data.Data.Sales_3Week_3_3_YoY_Diff_7, "");
+
+      let l3 = _.without(data.Data.Sales_9Week_3_YoY_Diff_7, "");
+
+      setlegendData1(l1[l1.length - 1]);
+
+      setlegendData3(l3[l3.length - 1]);
 
       let newData = [
         {
@@ -109,6 +120,7 @@ const SaleChangePlot = () => {
       );
 
       setMaxGraphNumber(parseInt(maxNumber) + 10);
+      setShowProgress(false);
     } catch (error) {
       console.log(error);
       setShowProgress(false);
@@ -142,12 +154,12 @@ const SaleChangePlot = () => {
         legendData={[
           {
             value1: "3W",
-            value2: legendData1 + "%",
+            value2: parseFloat(legendData1).toFixed(1) + "%",
             color: "#0E83AE",
           },
           {
             value1: "9W",
-            value2: legendData3 + "%",
+            value2: parseFloat(legendData3).toFixed(1) + "%",
             color: "#FF0000",
           },
         ]}
